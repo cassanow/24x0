@@ -3,22 +3,45 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddScoped<F1RollService>();
+
+builder.Services.AddDbContextFactory<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddCors(o => o.AddDefaultPolicy(p =>
+    p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+
+builder.Services.AddSingleton<SimulacaoService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+app.UseCors();
 
+app.MapGet("/rolar/pilotos", async (F1RollService service) =>
+{
+    var tasks = Enumerable.Range(0, 10).Select(_ => service.RolarPiloto());
+    var pilotos = await Task.WhenAll(tasks);
+    return Results.Ok(pilotos);
+});
+
+app.MapGet("/rolar/equipes", async (F1RollService service) =>
+{
+    var tasks = Enumerable.Range(0, 10).Select(_ => service.RolarEquipe());
+    var equipes = await Task.WhenAll(tasks);
+    return Results.Ok(equipes);
+});
+
+app.MapGet("/simular", (SimulacaoService sim, int forcaPiloto, int forcaEquipe) =>
+{
+    var resultado = sim.Simular(forcaPiloto, forcaEquipe);
+    return Results.Ok(resultado);
+});
 
 app.Run();

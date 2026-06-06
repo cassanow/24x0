@@ -11,7 +11,7 @@ using _24x0.Context;
 namespace _24x0.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260605033946_Initial")]
+    [Migration("20260606115522_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,27 @@ namespace _24x0.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("_24x0.Model.Construtor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApiId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Construtores");
+                });
+
             modelBuilder.Entity("_24x0.Model.Piloto", b =>
                 {
                     b.Property<int>("Id")
@@ -31,6 +52,10 @@ namespace _24x0.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApiId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("ForcaBase")
                         .HasColumnType("integer");
@@ -39,42 +64,9 @@ namespace _24x0.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("TemporadaId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TemporadaId");
 
                     b.ToTable("Pilotos");
-                });
-
-            modelBuilder.Entity("_24x0.Model.Temporada", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Ano")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Temporadas");
-                });
-
-            modelBuilder.Entity("_24x0.Model.Piloto", b =>
-                {
-                    b.HasOne("_24x0.Model.Temporada", null)
-                        .WithMany("GridDisponivel")
-                        .HasForeignKey("TemporadaId");
-                });
-
-            modelBuilder.Entity("_24x0.Model.Temporada", b =>
-                {
-                    b.Navigation("GridDisponivel");
                 });
 #pragma warning restore 612, 618
         }

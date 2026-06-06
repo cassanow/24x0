@@ -12,16 +12,17 @@ namespace _24x0.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Temporadas",
+                name: "Construtores",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Ano = table.Column<int>(type: "integer", nullable: false)
+                    Nome = table.Column<string>(type: "text", nullable: false),
+                    ApiId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Temporadas", x => x.Id);
+                    table.PrimaryKey("PK_Construtores", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -32,32 +33,22 @@ namespace _24x0.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Nome = table.Column<string>(type: "text", nullable: false),
                     ForcaBase = table.Column<int>(type: "integer", nullable: false),
-                    TemporadaId = table.Column<int>(type: "integer", nullable: true)
+                    ApiId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pilotos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Pilotos_Temporadas_TemporadaId",
-                        column: x => x.TemporadaId,
-                        principalTable: "Temporadas",
-                        principalColumn: "Id");
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Pilotos_TemporadaId",
-                table: "Pilotos",
-                column: "TemporadaId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Pilotos");
+                name: "Construtores");
 
             migrationBuilder.DropTable(
-                name: "Temporadas");
+                name: "Pilotos");
         }
     }
 }

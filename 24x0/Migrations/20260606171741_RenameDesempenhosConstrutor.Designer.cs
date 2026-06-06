@@ -11,8 +11,8 @@ using _24x0.Context;
 namespace _24x0.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260605034125_Corrigindo")]
-    partial class Corrigindo
+    [Migration("20260606171741_RenameDesempenhosConstrutor")]
+    partial class RenameDesempenhosConstrutor
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,10 @@ namespace _24x0.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ApiId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("text");
@@ -41,7 +45,7 @@ namespace _24x0.Migrations
                     b.ToTable("Construtores");
                 });
 
-            modelBuilder.Entity("_24x0.Model.DesempenhoConstrutora", b =>
+            modelBuilder.Entity("_24x0.Model.DesempenhoConstrutor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,45 +59,20 @@ namespace _24x0.Migrations
                     b.Property<int>("ConstrutorId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ConstrutoraId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("ForcaBase")
                         .HasColumnType("integer");
+
+                    b.Property<double>("Pontos")
+                        .HasColumnType("double precision");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ConstrutorId");
 
-                    b.ToTable("DesempenhoConstrutoras");
+                    b.ToTable("DesempenhosConstrutor");
                 });
 
-            modelBuilder.Entity("_24x0.Model.Piloto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ForcaBase")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("TemporadaId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TemporadaId");
-
-                    b.ToTable("Pilotos");
-                });
-
-            modelBuilder.Entity("_24x0.Model.Temporada", b =>
+            modelBuilder.Entity("_24x0.Model.DesempenhoPiloto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -104,15 +83,50 @@ namespace _24x0.Migrations
                     b.Property<int>("Ano")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ForcaBase")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PilotoId")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Pontos")
+                        .HasColumnType("double precision");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Temporadas");
+                    b.HasIndex("PilotoId");
+
+                    b.ToTable("DesempenhosPiloto");
                 });
 
-            modelBuilder.Entity("_24x0.Model.DesempenhoConstrutora", b =>
+            modelBuilder.Entity("_24x0.Model.Piloto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApiId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ForcaBase")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pilotos");
+                });
+
+            modelBuilder.Entity("_24x0.Model.DesempenhoConstrutor", b =>
                 {
                     b.HasOne("_24x0.Model.Construtor", "Construtor")
-                        .WithMany("Historico")
+                        .WithMany()
                         .HasForeignKey("ConstrutorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -120,21 +134,15 @@ namespace _24x0.Migrations
                     b.Navigation("Construtor");
                 });
 
-            modelBuilder.Entity("_24x0.Model.Piloto", b =>
+            modelBuilder.Entity("_24x0.Model.DesempenhoPiloto", b =>
                 {
-                    b.HasOne("_24x0.Model.Temporada", null)
-                        .WithMany("GridDisponivel")
-                        .HasForeignKey("TemporadaId");
-                });
+                    b.HasOne("_24x0.Model.Piloto", "Piloto")
+                        .WithMany()
+                        .HasForeignKey("PilotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("_24x0.Model.Construtor", b =>
-                {
-                    b.Navigation("Historico");
-                });
-
-            modelBuilder.Entity("_24x0.Model.Temporada", b =>
-                {
-                    b.Navigation("GridDisponivel");
+                    b.Navigation("Piloto");
                 });
 #pragma warning restore 612, 618
         }
